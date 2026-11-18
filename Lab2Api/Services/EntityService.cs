@@ -144,8 +144,26 @@ if (_context != null)
 
 return result;
 }
-public Task DeleteAsync(int id)
+public async Task DeleteAsync(int id)
 {
-    throw new NotImplementedException();
+    var entity = _context != null
+        ? await _context.Entities.FindAsync(id)
+        : _entities.FirstOrDefault(e => e.Id == id);
+
+    if (entity == null)
+    {
+        throw new KeyNotFoundException(
+            $"Entity with ID {id} not found");
+    }
+
+    if (_context != null)
+    {
+        _context.Entities.Remove(entity);
+        await _context.SaveChangesAsync();
+    }
+    else
+    {
+        _entities.Remove(entity);
+    }
 }
 }
