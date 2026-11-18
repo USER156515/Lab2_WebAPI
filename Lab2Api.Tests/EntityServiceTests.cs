@@ -341,4 +341,25 @@ await Assert.ThrowsAsync<ArgumentException>(
     async () => await service.UpdateAsync(
         created.Id, updateDto));
 }
+[Fact]
+public async Task DeleteAsync_ExistingEntity_RemovesIt()
+{
+    var service = new EntityService();
+    var created = await service.CreateAsync(
+        new CreateEntityDto { Name = "ToDelete" });
+
+    await service.DeleteAsync(created.Id);
+
+    var result = await service.GetAllAsync();
+    Assert.Equal(0, result.TotalCount);
+}
+
+[Fact]
+public async Task DeleteAsync_NonExistingEntity_ThrowsKeyNotFound()
+{
+    var service = new EntityService();
+
+    await Assert.ThrowsAsync<KeyNotFoundException>(
+        () => service.DeleteAsync(9999));
+}
 }

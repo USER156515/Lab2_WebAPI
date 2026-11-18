@@ -144,4 +144,8 @@ if (_context != null)
 
 return result;
 }
+public Task DeleteAsync(int id)
+{
+    throw new NotImplementedException();
+}
 }
