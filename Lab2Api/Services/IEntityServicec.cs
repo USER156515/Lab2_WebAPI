@@ -12,4 +12,5 @@ Task<PagedResultDto<EntityResponseDto>> GetAllAsync(
     string? search = null);
 Task<EntityResponseDto> UpdateAsync(
     int id, UpdateEntityDto dto);
+    Task DeleteAsync(int id);
 }

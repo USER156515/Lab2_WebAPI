@@ -102,9 +102,7 @@ return Task.FromResult(result);
 public async Task<EntityResponseDto> UpdateAsync(
     int id, UpdateEntityDto dto)
 {
-    var entity = _context != null
-        ? await _context.Entities.FindAsync(id)
-        : _entities.FirstOrDefault(e => e.Id == id);
+    var entity = await FindEntityAsync(id);
 
 if (entity == null)
 {
@@ -143,5 +141,33 @@ if (_context != null)
 }
 
 return result;
+}
+
+private async Task<Entity?> FindEntityAsync(int id)
+{
+    return _context != null
+        ? await _context.Entities.FindAsync(id)
+        : _entities.FirstOrDefault(e => e.Id == id);
+}
+
+public async Task DeleteAsync(int id)
+{
+    var entity = await FindEntityAsync(id);
+
+    if (entity == null)
+    {
+        throw new KeyNotFoundException(
+            $"Entity with ID {id} not found");
+    }
+
+    if (_context != null)
+    {
+        _context.Entities.Remove(entity);
+        await _context.SaveChangesAsync();
+    }
+    else
+    {
+        _entities.Remove(entity);
+    }
 }
 }
