@@ -80,4 +80,23 @@ catch (ArgumentException ex)
     });
 }
 }
+
+[HttpDelete("{id}")]
+[ProducesResponseType(204)]
+[ProducesResponseType(404)]
+public async Task<IActionResult> Delete(int id)
+{
+    try
+    {
+        await _service.DeleteAsync(id);
+        return NoContent();
+    }
+    catch (KeyNotFoundException)
+    {
+        return NotFound(new
+        {
+            message = $"Entity with ID {id} not found"
+        });
+    }
+}
 }
