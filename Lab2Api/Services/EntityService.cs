@@ -102,9 +102,7 @@ return Task.FromResult(result);
 public async Task<EntityResponseDto> UpdateAsync(
     int id, UpdateEntityDto dto)
 {
-    var entity = _context != null
-        ? await _context.Entities.FindAsync(id)
-        : _entities.FirstOrDefault(e => e.Id == id);
+    var entity = await FindEntityAsync(id);
 
 if (entity == null)
 {
@@ -144,11 +142,17 @@ if (_context != null)
 
 return result;
 }
-public async Task DeleteAsync(int id)
+
+private async Task<Entity?> FindEntityAsync(int id)
 {
-    var entity = _context != null
+    return _context != null
         ? await _context.Entities.FindAsync(id)
         : _entities.FirstOrDefault(e => e.Id == id);
+}
+
+public async Task DeleteAsync(int id)
+{
+    var entity = await FindEntityAsync(id);
 
     if (entity == null)
     {
